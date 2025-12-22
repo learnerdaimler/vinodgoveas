@@ -1,0 +1,65 @@
+from abc import ABC, abstractmethod
+import math
+
+
+class Loan(ABC):
+    def __init__(self, customer_name, principal, rate, tenure_years):
+        self.customer_name = customer_name
+        self.principal = principal
+        self.rate = rate
+        self.tenure_years = tenure_years
+
+    @abstractmethod
+    def calculate_interest(self):
+        pass
+
+    def calculate_emi(self):
+        monthly_rate = self.rate / (12 * 100)
+        months = self.tenure_years * 12
+
+        emi = (self.principal * monthly_rate *
+               math.pow(1 + monthly_rate, months)) / \
+              (math.pow(1 + monthly_rate, months) - 1)
+
+        return round(emi, 2)
+
+    def loan_summary(self):
+        print("\n--- Loan Summary ---")
+        print("Customer Name :", self.customer_name)
+        print("Principal     :", self.principal)
+        print("Interest Rate :", self.rate, "%")
+        print("Tenure        :", self.tenure_years, "years")
+        print("EMI           :", self.calculate_emi())
+        print("Total Interest:", self.calculate_interest())
+
+
+class HomeLoan(Loan):
+    def calculate_interest(self):
+        interest = (self.principal * self.rate * self.tenure_years) / 100
+        processing_fee = 0.01 * self.principal  # 1% processing fee
+        return round(interest + processing_fee, 2)
+
+
+class PersonalLoan(Loan):
+    def calculate_interest(self):
+        interest = (self.principal * self.rate * self.tenure_years) / 100
+        processing_fee = 0.02 * self.principal  # 2% fee
+        risk_premium = 0.005 * self.principal  # extra risk cost
+        return round(interest + processing_fee + risk_premium, 2)
+
+
+class EducationLoan(Loan):
+    def calculate_interest(self):
+        interest = (self.principal * self.rate * self.tenure_years) / 100
+        subsidy = 0.10 * interest  # govt subsidy
+        return round(interest - subsidy, 2)
+
+
+# ----------- Main Program ------------
+home_loan = HomeLoan("Amit Sharma", 5000000, 7.5, 20)
+personal_loan = PersonalLoan("Riya Mehta", 500000, 12, 5)
+education_loan = EducationLoan("Arjun Verma", 800000, 6, 7)
+
+home_loan.loan_summary()
+personal_loan.loan_summary()
+education_loan.loan_summary()
