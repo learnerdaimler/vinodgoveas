@@ -1,0 +1,77 @@
+from abc import ABC, abstractmethod
+from datetime import date
+
+
+# Abstract Parent Class
+class BankAccount(ABC):
+    def __init__(self, account_no, customer_name, balance):
+        self.account_no = account_no
+        self.customer_name = customer_name
+        self.balance = balance
+        self.created_on = date.today()
+
+    def deposit(self, amount):
+        self.balance += amount
+        print(f"₹{amount} deposited. New balance: ₹{self.balance}")
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            raise ValueError("Insufficient balance")
+        self.balance -= amount
+        print(f"₹{amount} withdrawn. New balance: ₹{self.balance}")
+
+    @abstractmethod
+    def calculate_interest(self):
+        pass
+
+    def account_summary(self):
+        return {
+            "Account No": self.account_no,
+            "Customer": self.customer_name,
+            "Balance": self.balance,
+            "Created On": self.created_on
+        }
+
+
+# Child Class 1
+class SavingsAccount(BankAccount):
+    INTEREST_RATE = 0.04  # 4%
+
+    def calculate_interest(self):
+        interest = self.balance * self.INTEREST_RATE
+        print(f"Savings Interest: ₹{interest}")
+        return interest
+
+
+# Child Class 2
+class CurrentAccount(BankAccount):
+    def calculate_interest(self):
+        print("Current accounts do not earn interest")
+        return 0
+
+
+# Child Class 3
+class LoanAccount(BankAccount):
+    INTEREST_RATE = 0.10  # 10%
+
+    def calculate_interest(self):
+        interest = self.balance * self.INTEREST_RATE
+        print(f"Loan Interest Payable: ₹{interest}")
+        return interest
+
+    def withdraw(self, amount):
+        raise Exception("Withdrawals not allowed from loan account")
+
+
+# ---- Usage (Polymorphism) ----
+
+accounts = [
+    SavingsAccount("SA101", "Amit", 50000),
+    CurrentAccount("CA201", "Neha", 120000),
+    LoanAccount("LA301", "Rahul", 300000)
+]
+
+for account in accounts:
+    print("\nAccount Summary:")
+    print(account.account_summary())
+    account.calculate_interest()
