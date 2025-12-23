@@ -1,0 +1,63 @@
+class Employee:
+    def __init__(self, emp_id, name):
+        self.emp_id = emp_id
+        self.name = name
+
+    def get_details(self):
+        return f"ID: {self.emp_id}, Name: {self.name}"
+
+
+class Developer(Employee):
+    def __init__(self, emp_id, name, programming_language):
+        super().__init__(emp_id, name)
+        self.programming_language = programming_language
+
+    def get_role(self):
+        return f"Developer skilled in {self.programming_language}"
+
+
+class Manager(Employee):
+    def __init__(self, emp_id, name, team_size):
+        super().__init__(emp_id, name)
+        self.team_size = team_size
+
+    def get_role(self):
+        return f"Manager managing {self.team_size} people"
+
+
+class TechLead(Developer, Manager):
+    def __init__(self, emp_id, name, programming_language, team_size):
+        # Cooperative inheritance (MRO-aware)
+        super().__init__(emp_id, name, programming_language)
+        self.team_size = team_size
+
+    def get_role(self):
+        return (
+            f"Tech Lead | Codes in {self.programming_language} | "
+            f"Manages {self.team_size} people"
+        )
+
+
+# ----------- Usage ------------
+
+emp = Employee(101, "Anita")
+dev = Developer(102, "Rahul", "Python")
+mgr = Manager(103, "Sneha", 8)
+lead = TechLead(104, "Arjun", "Java", 5)
+
+print(emp.get_details())
+print(dev.get_details(), "-", dev.get_role())
+print(mgr.get_details(), "-", mgr.get_role())
+print(lead.get_details(), "-", lead.get_role())
+
+
+
+
+
+
+
+
+
+
+
+
